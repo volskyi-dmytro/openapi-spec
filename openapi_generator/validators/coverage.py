@@ -82,9 +82,7 @@ class CoverageAnalyzer:
             ConfidenceLevel.MEDIUM: 0.6,
             ConfidenceLevel.LOW: 0.3,
         }
-        avg_confidence = sum(
-            confidence_scores[e.confidence] for e in endpoints
-        ) / total
+        avg_confidence = sum(confidence_scores[e.confidence] for e in endpoints) / total
 
         report = CoverageReport(
             total_endpoints=total,

@@ -48,9 +48,7 @@ class SpecValidator:
             errors.append(f"Unexpected error: {e}")
             return False, errors
 
-    def validate_with_recommendations(
-        self, spec_dict: Dict
-    ) -> Tuple[bool, List[str], List[str]]:
+    def validate_with_recommendations(self, spec_dict: Dict) -> Tuple[bool, List[str], List[str]]:
         """Validate spec and provide recommendations.
 
         Args:

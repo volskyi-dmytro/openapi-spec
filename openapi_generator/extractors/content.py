@@ -82,7 +82,7 @@ class ContentExtractor:
                         url=url,
                         title="JSON API Spec",
                         text=response.text,  # Keep raw JSON
-                        code_samples=[response.text]  # Also add to code samples
+                        code_samples=[response.text],  # Also add to code samples
                     )
                 else:
                     # Use BeautifulSoup for HTML
@@ -119,9 +119,7 @@ class ContentExtractor:
         # Clean up text
         text = self._clean_text(text)
 
-        logger.debug(
-            f"Extracted {len(text)} chars, {len(code_samples)} code samples from {url}"
-        )
+        logger.debug(f"Extracted {len(text)} chars, {len(code_samples)} code samples from {url}")
 
         return DocumentContent(url=url, title=title, text=text, code_samples=code_samples)
 

@@ -159,10 +159,7 @@ async def test_deduplication():
     spec_dict = spec.model_dump(by_alias=True, exclude_none=True)
 
     # Count paths after
-    total_after = sum(
-        len(methods)
-        for methods in spec_dict["paths"].values()
-    )
+    total_after = sum(len(methods) for methods in spec_dict["paths"].values())
 
     # Should have deduplicated if there were duplicates
     # (we don't assert less because catfact might not have duplicates)

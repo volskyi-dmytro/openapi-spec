@@ -187,12 +187,24 @@ class CacheManager:
         Returns:
             Dictionary with cache stats
         """
-        http_count = len(list(self.http_cache_dir.glob("*.txt"))) if self.http_cache_dir.exists() else 0
-        llm_count = len(list(self.llm_cache_dir.glob("*.pkl"))) if self.llm_cache_dir.exists() else 0
+        http_count = (
+            len(list(self.http_cache_dir.glob("*.txt"))) if self.http_cache_dir.exists() else 0
+        )
+        llm_count = (
+            len(list(self.llm_cache_dir.glob("*.pkl"))) if self.llm_cache_dir.exists() else 0
+        )
 
         # Calculate total size
-        http_size = sum(f.stat().st_size for f in self.http_cache_dir.glob("*.txt")) if self.http_cache_dir.exists() else 0
-        llm_size = sum(f.stat().st_size for f in self.llm_cache_dir.glob("*.pkl")) if self.llm_cache_dir.exists() else 0
+        http_size = (
+            sum(f.stat().st_size for f in self.http_cache_dir.glob("*.txt"))
+            if self.http_cache_dir.exists()
+            else 0
+        )
+        llm_size = (
+            sum(f.stat().st_size for f in self.llm_cache_dir.glob("*.pkl"))
+            if self.llm_cache_dir.exists()
+            else 0
+        )
 
         return {
             "http_cache_enabled": self.settings.enable_http_cache,

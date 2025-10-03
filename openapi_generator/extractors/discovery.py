@@ -59,28 +59,24 @@ class DocumentationDiscovery:
     API_DOC_PATTERNS = [
         # Standard documentation paths
         r"/api",
-        r"/docs?",                    # Matches /doc and /docs
+        r"/docs?",  # Matches /doc and /docs
         r"/documentation",
         r"/reference",
-        r"/api.?reference",           # Matches /api-reference, /apireference, /api_reference
-
+        r"/api.?reference",  # Matches /api-reference, /apireference, /api_reference
         # Developer-focused paths
         r"/developer",
         r"/developers",
-
         # Guide/tutorial paths
-        r"/guides?",                  # Matches /guide and /guides
-        r"/tutorials?",               # Matches /tutorial and /tutorials
-        r"/getting.?started",         # Matches /getting-started, /gettingstarted
-        r"/quick.?start",             # Matches /quickstart, /quick-start
-        r"/how.?to",                  # Matches /how-to, /howto
-
+        r"/guides?",  # Matches /guide and /guides
+        r"/tutorials?",  # Matches /tutorial and /tutorials
+        r"/getting.?started",  # Matches /getting-started, /gettingstarted
+        r"/quick.?start",  # Matches /quickstart, /quick-start
+        r"/how.?to",  # Matches /how-to, /howto
         # Resource paths
         r"/resources",
         r"/help",
         r"/support/api",
         r"/knowledge.?base",
-
         # Technical keywords
         r"endpoint",
         r"authentication",
@@ -201,9 +197,19 @@ class DocumentationDiscovery:
         if any(re.search(pattern, url_lower) for pattern in self.API_DOC_PATTERNS):
             # CHANGED: Lower threshold from 3 to 2, expanded keyword list
             api_keywords = [
-                "endpoint", "api", "request", "response",
-                "authentication", "get", "post", "put", "delete",
-                "parameter", "header", "body", "json"
+                "endpoint",
+                "api",
+                "request",
+                "response",
+                "authentication",
+                "get",
+                "post",
+                "put",
+                "delete",
+                "parameter",
+                "header",
+                "body",
+                "json",
             ]
             keyword_count = sum(1 for keyword in api_keywords if keyword in html_lower)
 
@@ -211,7 +217,9 @@ class DocumentationDiscovery:
                 logger.debug(f"URL pattern + keyword match for {url} (keywords: {keyword_count})")
                 return True
             else:
-                logger.debug(f"URL pattern match but insufficient keywords for {url} (keywords: {keyword_count}, threshold: 2)")
+                logger.debug(
+                    f"URL pattern match but insufficient keywords for {url} (keywords: {keyword_count}, threshold: 2)"
+                )
 
         # Strategy 3: Strong content match (even without URL match)
         # Check for OpenAPI/Swagger indicators
@@ -221,9 +229,19 @@ class DocumentationDiscovery:
 
         # Check for high density of API keywords
         api_keywords_extended = [
-            "endpoint", "api", "request", "response",
-            "authentication", "get", "post", "put", "delete",
-            "parameter", "header", "body", "json"
+            "endpoint",
+            "api",
+            "request",
+            "response",
+            "authentication",
+            "get",
+            "post",
+            "put",
+            "delete",
+            "parameter",
+            "header",
+            "body",
+            "json",
         ]
         api_keyword_density = sum(1 for kw in api_keywords_extended if kw in html_lower)
         if api_keyword_density >= 5:  # 5+ keywords = probably API docs
@@ -302,8 +320,8 @@ class DocumentationDiscovery:
         depth = 0
 
         while queue and depth < self.settings.max_depth:
-            current_batch = queue[:self.settings.max_concurrent_requests]
-            queue = queue[self.settings.max_concurrent_requests:]
+            current_batch = queue[: self.settings.max_concurrent_requests]
+            queue = queue[self.settings.max_concurrent_requests :]
 
             tasks = [self._crawl_page(client, url) for url in current_batch]
             results = await asyncio.gather(*tasks, return_exceptions=True)

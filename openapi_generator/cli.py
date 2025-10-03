@@ -53,7 +53,14 @@ console = Console()
     multiple=True,
     help="Direct URL(s) to API documentation (bypasses discovery). Can be specified multiple times.",
 )
-def main(base_url: str, output: Optional[str], format: str, validate: bool, filter: Optional[str], doc_url: tuple) -> None:
+def main(
+    base_url: str,
+    output: Optional[str],
+    format: str,
+    validate: bool,
+    filter: Optional[str],
+    doc_url: tuple,
+) -> None:
     """Generate OpenAPI specification from API documentation.
 
     BASE_URL: Base URL of the API documentation (e.g., https://api.example.com)
@@ -78,7 +85,12 @@ def main(base_url: str, output: Optional[str], format: str, validate: bool, filt
 
 
 async def run_pipeline(
-    base_url: str, output: Optional[str], format: str, validate: bool, filter: Optional[str] = None, doc_urls: tuple = ()
+    base_url: str,
+    output: Optional[str],
+    format: str,
+    validate: bool,
+    filter: Optional[str] = None,
+    doc_urls: tuple = (),
 ) -> None:
     """Run the complete generation pipeline.
 
@@ -109,12 +121,16 @@ async def run_pipeline(
     ) as progress:
         # Discovery (or use manual URLs)
         if doc_urls:
-            console.print(f"[yellow]Using {len(doc_urls)} manually specified documentation URL(s)[/yellow]")
+            console.print(
+                f"[yellow]Using {len(doc_urls)} manually specified documentation URL(s)[/yellow]"
+            )
             doc_urls = list(doc_urls)
         elif settings.force_doc_urls:
             # Check environment variable override
-            doc_urls = [url.strip() for url in settings.force_doc_urls.split(',')]
-            console.print(f"[yellow]Using {len(doc_urls)} documentation URL(s) from FORCE_DOC_URLS environment variable[/yellow]")
+            doc_urls = [url.strip() for url in settings.force_doc_urls.split(",")]
+            console.print(
+                f"[yellow]Using {len(doc_urls)} documentation URL(s) from FORCE_DOC_URLS environment variable[/yellow]"
+            )
         else:
             task = progress.add_task("Discovering documentation pages...", total=None)
             doc_urls = await orchestrator.discovery.discover()
@@ -144,6 +160,7 @@ async def run_pipeline(
         # Apply query filter if provided
         if filter:
             from openapi_generator.utils.query_filter import QueryFilter
+
             query_filter = QueryFilter()
 
             # Collect all endpoints
@@ -152,16 +169,23 @@ async def run_pipeline(
                 all_endpoints_before.extend(result.endpoints)
 
             # Filter endpoints
-            filtered_endpoints = query_filter.apply_filter(all_endpoints_before, filter, threshold=0.3)
+            filtered_endpoints = query_filter.apply_filter(
+                all_endpoints_before, filter, threshold=0.3
+            )
 
             # Create new extraction result with filtered endpoints
             from openapi_generator.models.schemas import ExtractionResult, ConfidenceLevel
-            extraction_results = [ExtractionResult(
-                endpoints=filtered_endpoints,
-                confidence=ConfidenceLevel.HIGH,
-            )]
 
-            console.print(f"Filtered {len(all_endpoints_before)} to {len(filtered_endpoints)} endpoints (query: '{filter}')")
+            extraction_results = [
+                ExtractionResult(
+                    endpoints=filtered_endpoints,
+                    confidence=ConfidenceLevel.HIGH,
+                )
+            ]
+
+            console.print(
+                f"Filtered {len(all_endpoints_before)} to {len(filtered_endpoints)} endpoints (query: '{filter}')"
+            )
 
         # Build OpenAPI spec
         task = progress.add_task("Building OpenAPI specification...", total=None)
@@ -188,9 +212,7 @@ async def run_pipeline(
     if validate:
         console.print("\n[bold]Validation:[/bold]")
         validator = SpecValidator()
-        is_valid, errors, recommendations = validator.validate_with_recommendations(
-            spec_dict
-        )
+        is_valid, errors, recommendations = validator.validate_with_recommendations(spec_dict)
 
         if is_valid:
             console.print("[green]Specification is valid![/green]")

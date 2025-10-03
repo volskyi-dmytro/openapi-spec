@@ -113,7 +113,14 @@ Now extract ALL endpoints by calling record_endpoint for each one."""
                                     "required": {"type": "boolean"},
                                     "type": {
                                         "type": "string",
-                                        "enum": ["string", "number", "integer", "boolean", "array", "object"],
+                                        "enum": [
+                                            "string",
+                                            "number",
+                                            "integer",
+                                            "boolean",
+                                            "array",
+                                            "object",
+                                        ],
                                     },
                                     "example": {"type": "string"},
                                 },
@@ -230,12 +237,16 @@ Now extract ALL endpoints by calling record_endpoint for each one."""
                     # Try to parse as JSON
                     spec = json.loads(sample)
                     if isinstance(spec, dict) and "paths" in spec:
-                        logger.info(f"Found embedded OpenAPI spec in code sample from {content.url}")
+                        logger.info(
+                            f"Found embedded OpenAPI spec in code sample from {content.url}"
+                        )
                         return self._convert_openapi_to_result(spec, content.url)
                 except json.JSONDecodeError:
                     continue
                 except Exception as e:
-                    logger.error(f"Error converting embedded OpenAPI from sample: {e}", exc_info=True)
+                    logger.error(
+                        f"Error converting embedded OpenAPI from sample: {e}", exc_info=True
+                    )
                     continue
 
         return None
@@ -279,15 +290,19 @@ Now extract ALL endpoints by calling record_endpoint for each one."""
                                 elif "type" in param:
                                     param_type = param.get("type", "string")
 
-                                parameters.append(Parameter(
-                                    name=param.get("name", "unknown"),
-                                    location=ParameterLocation(param.get("in", "query")),
-                                    description=param.get("description"),
-                                    required=param.get("required", False),
-                                    type=DataType(param_type),
-                                ))
+                                parameters.append(
+                                    Parameter(
+                                        name=param.get("name", "unknown"),
+                                        location=ParameterLocation(param.get("in", "query")),
+                                        description=param.get("description"),
+                                        required=param.get("required", False),
+                                        type=DataType(param_type),
+                                    )
+                                )
                             except (KeyError, ValueError) as e:
-                                logger.warning(f"Skipping invalid parameter in {method} {path}: {e}")
+                                logger.warning(
+                                    f"Skipping invalid parameter in {method} {path}: {e}"
+                                )
                                 continue
 
                         # Extract responses with error handling
@@ -297,12 +312,16 @@ Now extract ALL endpoints by calling record_endpoint for each one."""
                                 if not isinstance(response_info, dict):
                                     continue
 
-                                responses.append(Response(
-                                    status_code=str(status_code),
-                                    description=response_info.get("description", ""),
-                                ))
+                                responses.append(
+                                    Response(
+                                        status_code=str(status_code),
+                                        description=response_info.get("description", ""),
+                                    )
+                                )
                             except (KeyError, ValueError) as e:
-                                logger.warning(f"Skipping invalid response {status_code} in {method} {path}: {e}")
+                                logger.warning(
+                                    f"Skipping invalid response {status_code} in {method} {path}: {e}"
+                                )
                                 continue
 
                         endpoint = Endpoint(
@@ -318,7 +337,9 @@ Now extract ALL endpoints by calling record_endpoint for each one."""
                         )
                         endpoints.append(endpoint)
                     except Exception as e:
-                        logger.error(f"Failed to parse endpoint {method} {path}: {e}", exc_info=True)
+                        logger.error(
+                            f"Failed to parse endpoint {method} {path}: {e}", exc_info=True
+                        )
                         continue
 
         logger.info(f"Converted embedded OpenAPI spec: {len(endpoints)} endpoints")
@@ -345,7 +366,9 @@ Now extract ALL endpoints by calling record_endpoint for each one."""
             return embedded_result
 
         # Check cache before LLM extraction
-        content_hash = self.cache_manager.get_content_hash(content.text[:50000])  # Use first 50K chars for hash
+        content_hash = self.cache_manager.get_content_hash(
+            content.text[:50000]
+        )  # Use first 50K chars for hash
         cached_result = self.cache_manager.get_llm_cache(content_hash)
         if cached_result:
             logger.info(f" Using cached LLM result for {content.url}")

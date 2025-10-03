@@ -69,15 +69,11 @@ class OpenAPIOrchestrator:
         logger.info("Stage 3: Extracting API information with LLM...")
         self.extraction_results = await self._extract_with_llm(self.extracted_content)
 
-        logger.info(
-            f"Extraction complete! Processed {len(self.extraction_results)} pages"
-        )
+        logger.info(f"Extraction complete! Processed {len(self.extraction_results)} pages")
 
         return self.extraction_results
 
-    async def _extract_content_from_urls(
-        self, urls: List[str]
-    ) -> List[DocumentContent]:
+    async def _extract_content_from_urls(self, urls: List[str]) -> List[DocumentContent]:
         """Extract content from URLs with SPA detection.
 
         Args:
@@ -113,9 +109,7 @@ class OpenAPIOrchestrator:
 
         return contents
 
-    async def _extract_with_llm(
-        self, contents: List[DocumentContent]
-    ) -> List[ExtractionResult]:
+    async def _extract_with_llm(self, contents: List[DocumentContent]) -> List[ExtractionResult]:
         """Extract API information using LLM (map-reduce pattern with parallel processing).
 
         Args:
@@ -127,7 +121,7 @@ class OpenAPIOrchestrator:
         logger.info(f"Starting parallel LLM extraction for {len(contents)} documents")
 
         # Map phase: Process documents in parallel with concurrency control
-        max_concurrent = getattr(self.settings, 'max_concurrent_llm_calls', 3)
+        max_concurrent = getattr(self.settings, "max_concurrent_llm_calls", 3)
 
         # Create semaphore for concurrency control
         semaphore = asyncio.Semaphore(max_concurrent)
@@ -138,12 +132,15 @@ class OpenAPIOrchestrator:
                 logger.info(f"Processing document {index + 1}/{len(contents)}: {content.url}")
                 try:
                     result = await self.llm_extractor.extract(content)
-                    logger.info(f"Completed {index + 1}/{len(contents)}: {len(result.endpoints)} endpoints")
+                    logger.info(
+                        f"Completed {index + 1}/{len(contents)}: {len(result.endpoints)} endpoints"
+                    )
                     return result
                 except Exception as e:
                     logger.error(f"LLM extraction failed for {content.url}: {e}")
                     # Return empty result on failure
                     from openapi_generator.models.schemas import ExtractionResult, ConfidenceLevel
+
                     return ExtractionResult(confidence=ConfidenceLevel.LOW)
 
         # Process all documents in parallel (respecting concurrency limit)
@@ -152,7 +149,9 @@ class OpenAPIOrchestrator:
 
         # Filter out empty results
         valid_results = [r for r in results if r.endpoints]
-        logger.info(f"Parallel extraction complete: {len(valid_results)}/{len(contents)} documents successful")
+        logger.info(
+            f"Parallel extraction complete: {len(valid_results)}/{len(contents)} documents successful"
+        )
 
         # Reduce phase is handled in the generator (merging all results)
         return valid_results

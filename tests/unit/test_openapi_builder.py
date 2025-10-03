@@ -246,9 +246,7 @@ def test_tags_generation():
     endpoints = [
         Endpoint(path="/users", method=HTTPMethod.GET, summary="List", tags=["users"]),
         Endpoint(path="/posts", method=HTTPMethod.GET, summary="List", tags=["posts"]),
-        Endpoint(
-            path="/comments", method=HTTPMethod.GET, summary="List", tags=["posts", "users"]
-        ),
+        Endpoint(path="/comments", method=HTTPMethod.GET, summary="List", tags=["posts", "users"]),
     ]
 
     builder.endpoints = endpoints

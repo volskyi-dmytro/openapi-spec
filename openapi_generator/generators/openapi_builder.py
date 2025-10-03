@@ -142,8 +142,7 @@ class OpenAPIBuilder:
         return OpenAPIInfo(
             title=self.api_title,
             version="1.0.0",
-            description=self.api_description
-            or f"API specification generated from {self.base_url}",
+            description=self.api_description or f"API specification generated from {self.base_url}",
         )
 
     def _build_servers(self) -> List[Server]:
@@ -224,9 +223,11 @@ class OpenAPIBuilder:
                 "required": endpoint.request_body.required,
                 "content": {
                     endpoint.request_body.content_type: {
-                        "schema": self._build_schema_dict(endpoint.request_body.schema_)
-                        if endpoint.request_body.schema_
-                        else {"type": "object"},
+                        "schema": (
+                            self._build_schema_dict(endpoint.request_body.schema_)
+                            if endpoint.request_body.schema_
+                            else {"type": "object"}
+                        ),
                     }
                 },
             }
@@ -247,9 +248,7 @@ class OpenAPIBuilder:
 
                 if response.schema_:
                     operation["responses"][response.status_code]["content"] = {
-                        response.content_type: {
-                            "schema": self._build_schema_dict(response.schema_)
-                        }
+                        response.content_type: {"schema": self._build_schema_dict(response.schema_)}
                     }
 
                     # Add example if available

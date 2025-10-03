@@ -237,9 +237,7 @@ class AuthDetector:
 
         return enhanced_schemes
 
-    def _scheme_exists(
-        self, scheme: SecurityScheme, schemes: List[SecurityScheme]
-    ) -> bool:
+    def _scheme_exists(self, scheme: SecurityScheme, schemes: List[SecurityScheme]) -> bool:
         """Check if a similar scheme already exists in the list.
 
         Args:

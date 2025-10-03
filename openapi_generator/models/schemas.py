@@ -67,9 +67,7 @@ class Schema(BaseModel):
     """JSON Schema model for request/response bodies."""
 
     type: DataType = Field(description="Schema type")
-    properties: Optional[Dict[str, Any]] = Field(
-        None, description="Properties for object types"
-    )
+    properties: Optional[Dict[str, Any]] = Field(None, description="Properties for object types")
     items: Optional[Dict[str, Any]] = Field(None, description="Items for array types")
     required: Optional[List[str]] = Field(None, description="Required properties")
     description: Optional[str] = Field(None, description="Schema description")
@@ -118,9 +116,7 @@ class Endpoint(BaseModel):
     description: Optional[str] = Field(None, description="Detailed description")
     operation_id: Optional[str] = Field(None, description="Unique operation identifier")
     tags: Optional[List[str]] = Field(default_factory=list, description="Endpoint tags/categories")
-    parameters: List[Parameter] = Field(
-        default_factory=list, description="Endpoint parameters"
-    )
+    parameters: List[Parameter] = Field(default_factory=list, description="Endpoint parameters")
     request_body: Optional[RequestBody] = Field(None, description="Request body")
     responses: List[Response] = Field(default_factory=list, description="Possible responses")
     deprecated: bool = Field(default=False, description="Whether endpoint is deprecated")
@@ -211,18 +207,10 @@ class CoverageReport(BaseModel):
     endpoints_with_parameters: int = Field(
         description="Number of endpoints with parameters defined"
     )
-    endpoints_with_request_body: int = Field(
-        description="Number of endpoints with request body"
-    )
-    endpoints_with_responses: int = Field(
-        description="Number of endpoints with responses defined"
-    )
-    endpoints_with_examples: int = Field(
-        description="Number of endpoints with examples"
-    )
-    confidence_distribution: Dict[str, int] = Field(
-        description="Distribution of confidence levels"
-    )
+    endpoints_with_request_body: int = Field(description="Number of endpoints with request body")
+    endpoints_with_responses: int = Field(description="Number of endpoints with responses defined")
+    endpoints_with_examples: int = Field(description="Number of endpoints with examples")
+    confidence_distribution: Dict[str, int] = Field(description="Distribution of confidence levels")
     average_confidence: float = Field(description="Average confidence score (0-1)")
 
     @property
@@ -255,9 +243,7 @@ class CoverageReport(BaseModel):
 
         score = 0.0
         score += (self.endpoints_with_parameters / self.total_endpoints) * weights["parameters"]
-        score += (
-            self.endpoints_with_request_body / self.total_endpoints
-        ) * weights["request_body"]
+        score += (self.endpoints_with_request_body / self.total_endpoints) * weights["request_body"]
         score += (self.endpoints_with_responses / self.total_endpoints) * weights["responses"]
         score += (self.endpoints_with_examples / self.total_endpoints) * weights["examples"]
         score += self.average_confidence * weights["confidence"]

@@ -23,6 +23,7 @@ def temp_cache_dir(tmp_path):
 @pytest.fixture
 def cache_manager(temp_cache_dir, monkeypatch):
     """Create cache manager with temp directory."""
+
     # Mock get_settings to avoid requiring API key
     class MockSettings:
         cache_dir = temp_cache_dir

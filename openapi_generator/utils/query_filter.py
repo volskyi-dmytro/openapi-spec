@@ -59,9 +59,7 @@ class QueryFilter:
         # Sort by score (descending)
         scored_endpoints.sort(key=lambda x: x[1], reverse=True)
 
-        logger.info(
-            f"Filtered to {len(scored_endpoints)} endpoints (threshold: {threshold})"
-        )
+        logger.info(f"Filtered to {len(scored_endpoints)} endpoints (threshold: {threshold})")
 
         return scored_endpoints
 
@@ -78,15 +76,49 @@ class QueryFilter:
 
         # Remove common stop words
         stop_words = {
-            "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
-            "of", "with", "by", "from", "up", "about", "into", "through", "during",
-            "only", "just", "all", "show", "get", "find", "list", "return",
-            "give", "me", "i", "want", "need", "endpoints", "api", "spec",
-            "specification", "generate", "create",
+            "the",
+            "a",
+            "an",
+            "and",
+            "or",
+            "but",
+            "in",
+            "on",
+            "at",
+            "to",
+            "for",
+            "of",
+            "with",
+            "by",
+            "from",
+            "up",
+            "about",
+            "into",
+            "through",
+            "during",
+            "only",
+            "just",
+            "all",
+            "show",
+            "get",
+            "find",
+            "list",
+            "return",
+            "give",
+            "me",
+            "i",
+            "want",
+            "need",
+            "endpoints",
+            "api",
+            "spec",
+            "specification",
+            "generate",
+            "create",
         }
 
         # Split into words
-        words = re.findall(r'\b\w+\b', query_lower)
+        words = re.findall(r"\b\w+\b", query_lower)
 
         # Filter stop words and expand with mappings
         keywords = set()
@@ -130,7 +162,7 @@ class QueryFilter:
 
         for keyword in keywords:
             # Use word boundary for better matching
-            pattern = r'\b' + re.escape(keyword) + r'\b'
+            pattern = r"\b" + re.escape(keyword) + r"\b"
             if re.search(pattern, combined_text):
                 matches += 1
 
@@ -138,10 +170,7 @@ class QueryFilter:
         score = matches / total_keywords if total_keywords > 0 else 0.0
 
         # Boost score if path contains keywords
-        path_matches = sum(
-            1 for kw in keywords
-            if kw in (endpoint.path or "").lower()
-        )
+        path_matches = sum(1 for kw in keywords if kw in (endpoint.path or "").lower())
         if path_matches > 0:
             score = min(1.0, score + 0.2)  # Boost by 20% for path matches
 

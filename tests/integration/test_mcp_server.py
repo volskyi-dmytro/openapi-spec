@@ -52,25 +52,20 @@ async def test_generate_openapi_spec():
 async def test_validate_openapi_spec():
     """Test validate_openapi_spec MCP tool."""
     # Valid OpenAPI spec
-    valid_spec = json.dumps({
-        "openapi": "3.0.3",
-        "info": {
-            "title": "Test API",
-            "version": "1.0.0"
-        },
-        "paths": {
-            "/test": {
-                "get": {
-                    "summary": "Test endpoint",
-                    "responses": {
-                        "200": {
-                            "description": "Success"
-                        }
+    valid_spec = json.dumps(
+        {
+            "openapi": "3.0.3",
+            "info": {"title": "Test API", "version": "1.0.0"},
+            "paths": {
+                "/test": {
+                    "get": {
+                        "summary": "Test endpoint",
+                        "responses": {"200": {"description": "Success"}},
                     }
                 }
-            }
+            },
         }
-    })
+    )
 
     result = await validate_openapi_spec(valid_spec)
 
@@ -84,37 +79,26 @@ async def test_validate_openapi_spec():
 @pytest.mark.asyncio
 async def test_analyze_spec_coverage():
     """Test analyze_spec_coverage MCP tool."""
-    spec = json.dumps({
-        "openapi": "3.0.3",
-        "info": {
-            "title": "Test API",
-            "version": "1.0.0"
-        },
-        "paths": {
-            "/test": {
-                "get": {
-                    "summary": "Test endpoint",
-                    "parameters": [
-                        {
-                            "name": "id",
-                            "in": "query",
-                            "schema": {"type": "string"}
-                        }
-                    ],
-                    "responses": {
-                        "200": {
-                            "description": "Success",
-                            "content": {
-                                "application/json": {
-                                    "example": {"result": "ok"}
-                                }
+    spec = json.dumps(
+        {
+            "openapi": "3.0.3",
+            "info": {"title": "Test API", "version": "1.0.0"},
+            "paths": {
+                "/test": {
+                    "get": {
+                        "summary": "Test endpoint",
+                        "parameters": [{"name": "id", "in": "query", "schema": {"type": "string"}}],
+                        "responses": {
+                            "200": {
+                                "description": "Success",
+                                "content": {"application/json": {"example": {"result": "ok"}}},
                             }
-                        }
+                        },
                     }
                 }
-            }
+            },
         }
-    })
+    )
 
     result = await analyze_spec_coverage(spec)
 
@@ -142,22 +126,13 @@ async def test_analyze_spec_coverage():
 @pytest.mark.asyncio
 async def test_save_openapi_spec(tmp_path):
     """Test save_openapi_spec MCP tool."""
-    spec = json.dumps({
-        "openapi": "3.0.3",
-        "info": {
-            "title": "Test API",
-            "version": "1.0.0"
-        },
-        "paths": {}
-    })
+    spec = json.dumps(
+        {"openapi": "3.0.3", "info": {"title": "Test API", "version": "1.0.0"}, "paths": {}}
+    )
 
     output_path = tmp_path / "test_spec.json"
 
-    result = await save_openapi_spec(
-        spec_content=spec,
-        output_path=str(output_path),
-        format="json"
-    )
+    result = await save_openapi_spec(spec_content=spec, output_path=str(output_path), format="json")
 
     assert "success" in result
     assert result["success"] is True
