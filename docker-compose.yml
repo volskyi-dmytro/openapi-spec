@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  openapi-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: openapi-generator-mcp:latest
+    container_name: openapi-mcp-server
+
+    # Environment variables
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ANTHROPIC_MODEL=${ANTHROPIC_MODEL:-claude-sonnet-4-20250514}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - MAX_PAGES_PER_SITE=${MAX_PAGES_PER_SITE:-50}
+
+    # Mount volumes for output and logs
+    volumes:
+      - ./output:/app/output
+      - ./logs:/app/logs
+
+    # STDIO mode for MCP
+    stdin_open: true
+    tty: true
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Resource limits (optional)
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+# Named volumes (optional)
+volumes:
+  output:
+  logs:
