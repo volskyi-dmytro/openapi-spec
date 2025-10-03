@@ -1,8 +1,6 @@
 """Integration tests for the complete OpenAPI generation pipeline."""
 
-import asyncio
 import json
-from pathlib import Path
 
 import pytest
 

@@ -3,7 +3,7 @@
 import json
 import re
 from collections import defaultdict
-from typing import Any, Dict, List, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 import yaml
@@ -30,13 +30,13 @@ class OpenAPIBuilder:
             base_url: Base URL for the API
         """
         self.base_url = base_url
-        self.endpoints: List[Endpoint] = []
-        self.security_schemes: List[Any] = []
-        self.api_title: Optional[str] = None
-        self.api_description: Optional[str] = None
-        self.detected_base_url: Optional[str] = None
+        self.endpoints: list[Endpoint] = []
+        self.security_schemes: list[Any] = []
+        self.api_title: str | None = None
+        self.api_description: str | None = None
+        self.detected_base_url: str | None = None
 
-    def add_extraction_results(self, results: List[ExtractionResult]) -> None:
+    def add_extraction_results(self, results: list[ExtractionResult]) -> None:
         """Add extraction results to the builder.
 
         Args:
@@ -93,7 +93,7 @@ class OpenAPIBuilder:
         logger.info("OpenAPI spec built successfully")
         return spec
 
-    def _deduplicate_endpoints(self) -> List[Endpoint]:
+    def _deduplicate_endpoints(self) -> list[Endpoint]:
         """Remove duplicate endpoints based on path and method.
 
         Returns:
@@ -145,7 +145,7 @@ class OpenAPIBuilder:
             description=self.api_description or f"API specification generated from {self.base_url}",
         )
 
-    def _build_servers(self) -> List[Server]:
+    def _build_servers(self) -> list[Server]:
         """Build servers section.
 
         Returns:
@@ -159,7 +159,7 @@ class OpenAPIBuilder:
 
         return [Server(url=server_url, description="API server")]
 
-    def _build_paths(self, endpoints: List[Endpoint]) -> Dict[str, Dict[str, Any]]:
+    def _build_paths(self, endpoints: list[Endpoint]) -> dict[str, dict[str, Any]]:
         """Build paths section.
 
         Args:
@@ -168,7 +168,7 @@ class OpenAPIBuilder:
         Returns:
             Paths dictionary
         """
-        paths: Dict[str, Dict[str, Any]] = defaultdict(dict)
+        paths: dict[str, dict[str, Any]] = defaultdict(dict)
 
         for endpoint in endpoints:
             # Normalize path
@@ -184,7 +184,7 @@ class OpenAPIBuilder:
 
         return dict(paths)
 
-    def _build_operation(self, endpoint: Endpoint) -> Dict[str, Any]:
+    def _build_operation(self, endpoint: Endpoint) -> dict[str, Any]:
         """Build operation object for an endpoint.
 
         Args:
@@ -193,7 +193,7 @@ class OpenAPIBuilder:
         Returns:
             Operation dictionary
         """
-        operation: Dict[str, Any] = {}
+        operation: dict[str, Any] = {}
 
         # Basic info
         if endpoint.summary:
@@ -269,7 +269,7 @@ class OpenAPIBuilder:
 
         return operation
 
-    def _build_parameter(self, param: Any) -> Dict[str, Any]:
+    def _build_parameter(self, param: Any) -> dict[str, Any]:
         """Build parameter object.
 
         Args:
@@ -293,7 +293,7 @@ class OpenAPIBuilder:
 
         return param_dict
 
-    def _build_schema_dict(self, schema: Any) -> Dict[str, Any]:
+    def _build_schema_dict(self, schema: Any) -> dict[str, Any]:
         """Build schema dictionary.
 
         Args:
@@ -327,13 +327,13 @@ class OpenAPIBuilder:
 
         return schema_dict
 
-    def _build_components(self) -> Optional[Dict[str, Any]]:
+    def _build_components(self) -> dict[str, Any] | None:
         """Build components section.
 
         Returns:
             Components dictionary
         """
-        components: Dict[str, Any] = {}
+        components: dict[str, Any] = {}
 
         # Add security schemes if any
         if self.security_schemes:
@@ -357,7 +357,7 @@ class OpenAPIBuilder:
 
         return components if components else None
 
-    def _build_tags(self, endpoints: List[Endpoint]) -> Optional[List[Dict[str, str]]]:
+    def _build_tags(self, endpoints: list[Endpoint]) -> list[dict[str, str]] | None:
         """Build tags section.
 
         Args:

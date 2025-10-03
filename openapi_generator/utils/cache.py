@@ -1,11 +1,10 @@
 """Caching utilities for HTTP responses and LLM results."""
 
 import hashlib
-import json
 import pickle
 import time
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from openapi_generator.config import get_settings
 from openapi_generator.utils.logger import get_logger
@@ -62,7 +61,7 @@ class CacheManager:
 
         return True
 
-    def get_http_cache(self, url: str) -> Optional[str]:
+    def get_http_cache(self, url: str) -> str | None:
         """Get cached HTTP response.
 
         Args:
@@ -99,7 +98,7 @@ class CacheManager:
         cache_file.write_text(content, encoding="utf-8")
         logger.debug(f"HTTP cache set: {url}")
 
-    def get_llm_cache(self, content_hash: str) -> Optional[Any]:
+    def get_llm_cache(self, content_hash: str) -> Any | None:
         """Get cached LLM extraction result.
 
         Args:
@@ -154,7 +153,7 @@ class CacheManager:
         """
         return self._get_cache_key(content)
 
-    def clear_cache(self, cache_type: Optional[str] = None) -> int:
+    def clear_cache(self, cache_type: str | None = None) -> int:
         """Clear cache.
 
         Args:
@@ -219,7 +218,7 @@ class CacheManager:
 
 
 # Global cache manager instance
-_cache_manager: Optional[CacheManager] = None
+_cache_manager: CacheManager | None = None
 
 
 def get_cache_manager() -> CacheManager:

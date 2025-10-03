@@ -1,7 +1,6 @@
 """Natural language query filtering for endpoints."""
 
 import re
-from typing import List, Tuple
 
 from openapi_generator.models.schemas import Endpoint
 from openapi_generator.utils.logger import get_logger
@@ -31,8 +30,8 @@ class QueryFilter:
         pass
 
     def filter_endpoints(
-        self, endpoints: List[Endpoint], query: str, threshold: float = 0.3
-    ) -> List[Tuple[Endpoint, float]]:
+        self, endpoints: list[Endpoint], query: str, threshold: float = 0.3
+    ) -> list[tuple[Endpoint, float]]:
         """Filter endpoints based on natural language query.
 
         Args:
@@ -63,7 +62,7 @@ class QueryFilter:
 
         return scored_endpoints
 
-    def _extract_keywords(self, query: str) -> List[str]:
+    def _extract_keywords(self, query: str) -> list[str]:
         """Extract keywords from natural language query.
 
         Args:
@@ -133,7 +132,7 @@ class QueryFilter:
 
         return list(keywords)
 
-    def _calculate_relevance(self, endpoint: Endpoint, keywords: List[str]) -> float:
+    def _calculate_relevance(self, endpoint: Endpoint, keywords: list[str]) -> float:
         """Calculate relevance score for an endpoint.
 
         Args:
@@ -177,8 +176,8 @@ class QueryFilter:
         return score
 
     def apply_filter(
-        self, endpoints: List[Endpoint], query: str, threshold: float = 0.3
-    ) -> List[Endpoint]:
+        self, endpoints: list[Endpoint], query: str, threshold: float = 0.3
+    ) -> list[Endpoint]:
         """Apply filter and return only matching endpoints.
 
         Args:
@@ -193,7 +192,7 @@ class QueryFilter:
         return [endpoint for endpoint, score in scored_endpoints]
 
     def get_filter_summary(
-        self, endpoints: List[Endpoint], query: str, threshold: float = 0.3
+        self, endpoints: list[Endpoint], query: str, threshold: float = 0.3
     ) -> dict:
         """Get summary of filtering results.
 

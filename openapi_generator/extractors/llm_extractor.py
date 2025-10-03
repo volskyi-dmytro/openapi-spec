@@ -1,14 +1,12 @@
 """LLM-powered extraction of API information from documentation."""
 
 import json
-from typing import List, Optional
 
 import anthropic
 
 from openapi_generator.config import get_settings
-from openapi_generator.extractors.content import DocumentContent
 from openapi_generator.extractors.auth_detector import AuthDetector
-from openapi_generator.utils.cache import get_cache_manager
+from openapi_generator.extractors.content import DocumentContent
 from openapi_generator.models.schemas import (
     ConfidenceLevel,
     DataType,
@@ -22,6 +20,7 @@ from openapi_generator.models.schemas import (
     Schema,
     SecurityScheme,
 )
+from openapi_generator.utils.cache import get_cache_manager
 from openapi_generator.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -30,7 +29,8 @@ logger = get_logger(__name__)
 class LLMExtractor:
     """Extracts API information using Claude with structured outputs."""
 
-    EXTRACTION_PROMPT = """You are an API documentation analyzer. Your task is to extract ALL API endpoints from the documentation.
+    EXTRACTION_PROMPT = """You are an API documentation analyzer. Your task is to extract ALL API \
+endpoints from the documentation.
 
 TASK: For EVERY endpoint you find, call the record_endpoint tool.
 
@@ -69,7 +69,7 @@ Now extract ALL endpoints by calling record_endpoint for each one."""
         self.cache_manager = get_cache_manager()
         self.auth_detector = AuthDetector()
 
-    def _create_extraction_tools(self) -> List[dict]:
+    def _create_extraction_tools(self) -> list[dict]:
         """Create tools definition for structured output.
 
         Returns:
@@ -151,7 +151,9 @@ Now extract ALL endpoints by calling record_endpoint for each one."""
                                     "example": {"type": "string"},
                                     "schema_properties": {
                                         "type": "object",
-                                        "description": "JSON object describing the schema properties",
+                                        "description": (
+                                            "JSON object describing the schema properties"
+                                        ),
                                     },
                                 },
                                 "required": ["status_code", "description"],
@@ -208,7 +210,7 @@ Now extract ALL endpoints by calling record_endpoint for each one."""
             },
         ]
 
-    def _try_extract_embedded_openapi(self, content: DocumentContent) -> Optional[ExtractionResult]:
+    def _try_extract_embedded_openapi(self, content: DocumentContent) -> ExtractionResult | None:
         """Try to extract embedded OpenAPI spec from HTML/JS.
 
         Args:
@@ -320,7 +322,8 @@ Now extract ALL endpoints by calling record_endpoint for each one."""
                                 )
                             except (KeyError, ValueError) as e:
                                 logger.warning(
-                                    f"Skipping invalid response {status_code} in {method} {path}: {e}"
+                                    f"Skipping invalid response {status_code} in "
+                                    f"{method} {path}: {e}"
                                 )
                                 continue
 
@@ -421,7 +424,8 @@ Now extract ALL endpoints by calling record_endpoint for each one."""
             self.cache_manager.set_llm_cache(content_hash, result)
 
             logger.info(
-                f"Extracted {len(result.endpoints)} endpoints and {len(result.security_schemes)} auth schemes from {content.url}"
+                f"Extracted {len(result.endpoints)} endpoints and "
+                f"{len(result.security_schemes)} auth schemes from {content.url}"
             )
             return result
 
@@ -441,11 +445,11 @@ Now extract ALL endpoints by calling record_endpoint for each one."""
         Returns:
             Parsed extraction result
         """
-        endpoints: List[Endpoint] = []
-        security_schemes: List[SecurityScheme] = []
-        api_title: Optional[str] = None
-        api_description: Optional[str] = None
-        base_url: Optional[str] = None
+        endpoints: list[Endpoint] = []
+        security_schemes: list[SecurityScheme] = []
+        api_title: str | None = None
+        api_description: str | None = None
+        base_url: str | None = None
 
         for content_block in response.content:
             if content_block.type == "tool_use":

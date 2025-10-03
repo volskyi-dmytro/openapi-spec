@@ -1,7 +1,5 @@
 """Coverage and quality reporting for generated specifications."""
 
-from typing import List
-
 from openapi_generator.models.schemas import (
     ConfidenceLevel,
     CoverageReport,
@@ -15,7 +13,7 @@ logger = get_logger(__name__)
 class CoverageAnalyzer:
     """Analyzes coverage and quality of extracted endpoints."""
 
-    def analyze(self, endpoints: List[Endpoint]) -> CoverageReport:
+    def analyze(self, endpoints: list[Endpoint]) -> CoverageReport:
         """Analyze endpoint coverage and quality.
 
         Args:

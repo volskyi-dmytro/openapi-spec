@@ -1,7 +1,5 @@
 """Unit tests for auth detector."""
 
-import pytest
-
 from openapi_generator.extractors.auth_detector import AuthDetector
 from openapi_generator.models.schemas import SecurityScheme
 

@@ -3,7 +3,6 @@
 import asyncio
 import sys
 from pathlib import Path
-from typing import Optional
 
 import click
 from rich.console import Console
@@ -51,14 +50,17 @@ console = Console()
     "-d",
     type=str,
     multiple=True,
-    help="Direct URL(s) to API documentation (bypasses discovery). Can be specified multiple times.",
+    help=(
+        "Direct URL(s) to API documentation (bypasses discovery). "
+        "Can be specified multiple times."
+    ),
 )
 def main(
     base_url: str,
-    output: Optional[str],
+    output: str | None,
     format: str,
     validate: bool,
-    filter: Optional[str],
+    filter: str | None,
     doc_url: tuple,
 ) -> None:
     """Generate OpenAPI specification from API documentation.
@@ -86,10 +88,10 @@ def main(
 
 async def run_pipeline(
     base_url: str,
-    output: Optional[str],
+    output: str | None,
     format: str,
     validate: bool,
-    filter: Optional[str] = None,
+    filter: str | None = None,
     doc_urls: tuple = (),
 ) -> None:
     """Run the complete generation pipeline.
@@ -129,7 +131,8 @@ async def run_pipeline(
             # Check environment variable override
             doc_urls = [url.strip() for url in settings.force_doc_urls.split(",")]
             console.print(
-                f"[yellow]Using {len(doc_urls)} documentation URL(s) from FORCE_DOC_URLS environment variable[/yellow]"
+                f"[yellow]Using {len(doc_urls)} documentation URL(s) from "
+                f"FORCE_DOC_URLS environment variable[/yellow]"
             )
         else:
             task = progress.add_task("Discovering documentation pages...", total=None)
@@ -174,7 +177,7 @@ async def run_pipeline(
             )
 
             # Create new extraction result with filtered endpoints
-            from openapi_generator.models.schemas import ExtractionResult, ConfidenceLevel
+            from openapi_generator.models.schemas import ConfidenceLevel, ExtractionResult
 
             extraction_results = [
                 ExtractionResult(
@@ -184,7 +187,8 @@ async def run_pipeline(
             ]
 
             console.print(
-                f"Filtered {len(all_endpoints_before)} to {len(filtered_endpoints)} endpoints (query: '{filter}')"
+                f"Filtered {len(all_endpoints_before)} to {len(filtered_endpoints)} "
+                f"endpoints (query: '{filter}')"
             )
 
         # Build OpenAPI spec
@@ -282,20 +286,30 @@ def display_coverage_report(report) -> None:
         str(report.endpoints_with_parameters),
         f"{report.parameter_coverage:.1f}%",
     )
+    body_pct = (
+        (report.endpoints_with_request_body / report.total_endpoints * 100)
+        if report.total_endpoints > 0
+        else 0
+    )
     table.add_row(
         "With Request Body",
         str(report.endpoints_with_request_body),
-        f"{(report.endpoints_with_request_body / report.total_endpoints * 100) if report.total_endpoints > 0 else 0:.1f}%",
+        f"{body_pct:.1f}%",
     )
     table.add_row(
         "With Responses",
         str(report.endpoints_with_responses),
         f"{report.response_coverage:.1f}%",
     )
+    examples_pct = (
+        (report.endpoints_with_examples / report.total_endpoints * 100)
+        if report.total_endpoints > 0
+        else 0
+    )
     table.add_row(
         "With Examples",
         str(report.endpoints_with_examples),
-        f"{(report.endpoints_with_examples / report.total_endpoints * 100) if report.total_endpoints > 0 else 0:.1f}%",
+        f"{examples_pct:.1f}%",
     )
 
     console.print(table)

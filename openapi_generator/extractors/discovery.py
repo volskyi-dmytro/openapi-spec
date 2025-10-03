@@ -2,7 +2,6 @@
 
 import asyncio
 import re
-from typing import List, Optional, Set
 from urllib.parse import urljoin, urlparse
 
 import httpx
@@ -94,11 +93,11 @@ class DocumentationDiscovery:
         """
         self.base_url = base_url.rstrip("/")
         self.settings = get_settings()
-        self.visited_urls: Set[str] = set()
-        self.doc_urls: Set[str] = set()
+        self.visited_urls: set[str] = set()
+        self.doc_urls: set[str] = set()
         self.robots_checker = RobotsChecker(base_url)
 
-    async def discover(self) -> List[str]:
+    async def discover(self) -> list[str]:
         """Discover API documentation URLs.
 
         Returns:
@@ -148,7 +147,7 @@ class DocumentationDiscovery:
             if isinstance(result, str):  # Successfully found a doc URL
                 self.doc_urls.add(result)
 
-    async def _check_url(self, client: httpx.AsyncClient, url: str) -> Optional[str]:
+    async def _check_url(self, client: httpx.AsyncClient, url: str) -> str | None:
         """Check if a URL exists and looks like documentation.
 
         Args:
@@ -218,7 +217,8 @@ class DocumentationDiscovery:
                 return True
             else:
                 logger.debug(
-                    f"URL pattern match but insufficient keywords for {url} (keywords: {keyword_count}, threshold: 2)"
+                    f"URL pattern match but insufficient keywords for {url} "
+                    f"(keywords: {keyword_count}, threshold: 2)"
                 )
 
         # Strategy 3: Strong content match (even without URL match)
@@ -334,7 +334,7 @@ class DocumentationDiscovery:
 
         logger.info(f"Crawl complete at depth {depth}")
 
-    async def _crawl_page(self, client: httpx.AsyncClient, url: str) -> List[str]:
+    async def _crawl_page(self, client: httpx.AsyncClient, url: str) -> list[str]:
         """Crawl a single page and extract links.
 
         Args:

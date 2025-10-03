@@ -1,7 +1,6 @@
 """Robots.txt parser and checker for ethical crawling."""
 
-from typing import Optional
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin
 from urllib.robotparser import RobotFileParser
 
 from openapi_generator.utils.logger import get_logger
@@ -52,7 +51,7 @@ class RobotsChecker:
             logger.warning(f"Error checking robots.txt for {url}: {e}")
             return True  # Allow by default on error
 
-    def get_crawl_delay(self, user_agent: str = "*") -> Optional[float]:
+    def get_crawl_delay(self, user_agent: str = "*") -> float | None:
         """Get crawl delay from robots.txt.
 
         Args:

@@ -1,7 +1,6 @@
 """Enhanced authentication detection using patterns and heuristics."""
 
 import re
-from typing import List, Optional
 
 from openapi_generator.models.schemas import SecurityScheme
 from openapi_generator.utils.logger import get_logger
@@ -68,7 +67,7 @@ class AuthDetector:
         ],
     }
 
-    def detect_auth_schemes(self, text: str) -> List[SecurityScheme]:
+    def detect_auth_schemes(self, text: str) -> list[SecurityScheme]:
         """Detect authentication schemes from documentation text.
 
         Args:
@@ -155,7 +154,7 @@ class AuthDetector:
 
         return detected_schemes
 
-    def _matches_any_pattern(self, text: str, patterns: List[str]) -> bool:
+    def _matches_any_pattern(self, text: str, patterns: list[str]) -> bool:
         """Check if text matches any of the given patterns.
 
         Args:
@@ -170,7 +169,7 @@ class AuthDetector:
                 return True
         return False
 
-    def _extract_header_name(self, text: str) -> Optional[str]:
+    def _extract_header_name(self, text: str) -> str | None:
         """Try to extract API key header name from text.
 
         Args:
@@ -194,7 +193,7 @@ class AuthDetector:
 
         return None
 
-    def _detect_oauth2_flows(self, text: str) -> List[str]:
+    def _detect_oauth2_flows(self, text: str) -> list[str]:
         """Detect OAuth2 flows mentioned in text.
 
         Args:
@@ -212,8 +211,8 @@ class AuthDetector:
         return flows
 
     def enhance_llm_schemes(
-        self, llm_schemes: List[SecurityScheme], text: str
-    ) -> List[SecurityScheme]:
+        self, llm_schemes: list[SecurityScheme], text: str
+    ) -> list[SecurityScheme]:
         """Enhance LLM-extracted schemes with pattern-based detection.
 
         Args:
@@ -237,7 +236,7 @@ class AuthDetector:
 
         return enhanced_schemes
 
-    def _scheme_exists(self, scheme: SecurityScheme, schemes: List[SecurityScheme]) -> bool:
+    def _scheme_exists(self, scheme: SecurityScheme, schemes: list[SecurityScheme]) -> bool:
         """Check if a similar scheme already exists in the list.
 
         Args:

@@ -1,7 +1,6 @@
 """Main orchestrator for OpenAPI generation pipeline."""
 
 import asyncio
-from typing import List
 
 from openapi_generator.config import get_settings
 from openapi_generator.extractors.content import ContentExtractor, DocumentContent
@@ -33,11 +32,11 @@ class OpenAPIOrchestrator:
         self.js_renderer = JavaScriptRenderer()
 
         # Results
-        self.doc_urls: List[str] = []
-        self.extracted_content: List[DocumentContent] = []
-        self.extraction_results: List[ExtractionResult] = []
+        self.doc_urls: list[str] = []
+        self.extracted_content: list[DocumentContent] = []
+        self.extraction_results: list[ExtractionResult] = []
 
-    async def run(self) -> List[ExtractionResult]:
+    async def run(self) -> list[ExtractionResult]:
         """Run the complete pipeline.
 
         Returns:
@@ -73,7 +72,7 @@ class OpenAPIOrchestrator:
 
         return self.extraction_results
 
-    async def _extract_content_from_urls(self, urls: List[str]) -> List[DocumentContent]:
+    async def _extract_content_from_urls(self, urls: list[str]) -> list[DocumentContent]:
         """Extract content from URLs with SPA detection.
 
         Args:
@@ -109,7 +108,7 @@ class OpenAPIOrchestrator:
 
         return contents
 
-    async def _extract_with_llm(self, contents: List[DocumentContent]) -> List[ExtractionResult]:
+    async def _extract_with_llm(self, contents: list[DocumentContent]) -> list[ExtractionResult]:
         """Extract API information using LLM (map-reduce pattern with parallel processing).
 
         Args:
@@ -139,7 +138,7 @@ class OpenAPIOrchestrator:
                 except Exception as e:
                     logger.error(f"LLM extraction failed for {content.url}: {e}")
                     # Return empty result on failure
-                    from openapi_generator.models.schemas import ExtractionResult, ConfidenceLevel
+                    from openapi_generator.models.schemas import ConfidenceLevel, ExtractionResult
 
                     return ExtractionResult(confidence=ConfidenceLevel.LOW)
 
@@ -150,7 +149,8 @@ class OpenAPIOrchestrator:
         # Filter out empty results
         valid_results = [r for r in results if r.endpoints]
         logger.info(
-            f"Parallel extraction complete: {len(valid_results)}/{len(contents)} documents successful"
+            f"Parallel extraction complete: {len(valid_results)}/{len(contents)} "
+            f"documents successful"
         )
 
         # Reduce phase is handled in the generator (merging all results)

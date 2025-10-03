@@ -1,10 +1,9 @@
 """Content extraction from documentation pages."""
 
 import re
-from typing import Dict, List, Optional
 
 import httpx
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, NavigableString
 
 from openapi_generator.config import get_settings
 from openapi_generator.utils.logger import get_logger
@@ -15,7 +14,7 @@ logger = get_logger(__name__)
 class DocumentContent:
     """Represents extracted content from a documentation page."""
 
-    def __init__(self, url: str, title: str, text: str, code_samples: List[str]):
+    def __init__(self, url: str, title: str, text: str, code_samples: list[str]):
         """Initialize document content.
 
         Args:
@@ -52,7 +51,7 @@ class ContentExtractor:
         """Initialize content extractor."""
         self.settings = get_settings()
 
-    async def extract_from_url(self, url: str) -> Optional[DocumentContent]:
+    async def extract_from_url(self, url: str) -> DocumentContent | None:
         """Extract content from a URL.
 
         Args:
@@ -143,7 +142,7 @@ class ContentExtractor:
 
         return "Untitled"
 
-    def _extract_code_samples(self, soup: BeautifulSoup) -> List[str]:
+    def _extract_code_samples(self, soup: BeautifulSoup) -> list[str]:
         """Extract code samples from the page.
 
         Args:
@@ -218,7 +217,7 @@ class ContentExtractor:
 
         return "\n".join(lines).strip()
 
-    async def extract_batch(self, urls: List[str]) -> Dict[str, DocumentContent]:
+    async def extract_batch(self, urls: list[str]) -> dict[str, DocumentContent]:
         """Extract content from multiple URLs.
 
         Args:

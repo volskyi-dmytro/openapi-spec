@@ -1,8 +1,5 @@
 """Unit tests for cache manager."""
 
-import tempfile
-from pathlib import Path
-
 import pytest
 
 from openapi_generator.models.schemas import (

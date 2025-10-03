@@ -1,7 +1,5 @@
 """OpenAPI specification validator."""
 
-from typing import Dict, List, Tuple
-
 from openapi_spec_validator import validate
 from openapi_spec_validator.validation.exceptions import OpenAPIValidationError
 
@@ -13,7 +11,7 @@ logger = get_logger(__name__)
 class SpecValidator:
     """Validates OpenAPI specifications."""
 
-    def validate(self, spec_dict: Dict) -> Tuple[bool, List[str]]:
+    def validate(self, spec_dict: dict) -> tuple[bool, list[str]]:
         """Validate OpenAPI specification.
 
         Args:
@@ -48,7 +46,7 @@ class SpecValidator:
             errors.append(f"Unexpected error: {e}")
             return False, errors
 
-    def validate_with_recommendations(self, spec_dict: Dict) -> Tuple[bool, List[str], List[str]]:
+    def validate_with_recommendations(self, spec_dict: dict) -> tuple[bool, list[str], list[str]]:
         """Validate spec and provide recommendations.
 
         Args:
@@ -92,7 +90,8 @@ class SpecValidator:
 
             if missing_descriptions > 0:
                 recommendations.append(
-                    f"Consider adding descriptions to {missing_descriptions}/{total_operations} operations"
+                    f"Consider adding descriptions to "
+                    f"{missing_descriptions}/{total_operations} operations"
                 )
 
             if missing_examples > 0:

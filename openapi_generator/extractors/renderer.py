@@ -1,8 +1,6 @@
 """Playwright-based renderer for JavaScript-heavy sites."""
 
-from typing import Optional
-
-from playwright.async_api import async_playwright, Browser, Page
+from playwright.async_api import Browser, async_playwright
 
 from openapi_generator.config import get_settings
 from openapi_generator.utils.logger import get_logger
@@ -16,7 +14,7 @@ class JavaScriptRenderer:
     def __init__(self):
         """Initialize renderer."""
         self.settings = get_settings()
-        self._browser: Optional[Browser] = None
+        self._browser: Browser | None = None
 
     async def __aenter__(self) -> "JavaScriptRenderer":
         """Async context manager entry."""
@@ -26,7 +24,7 @@ class JavaScriptRenderer:
         """Async context manager exit."""
         await self.close()
 
-    async def render_page(self, url: str, wait_for_selector: Optional[str] = None) -> str:
+    async def render_page(self, url: str, wait_for_selector: str | None = None) -> str:
         """Render a page with JavaScript execution.
 
         Args:

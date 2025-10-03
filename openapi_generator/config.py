@@ -1,9 +1,7 @@
 """Configuration management for OpenAPI generator."""
 
 import logging
-import os
 from pathlib import Path
-from typing import Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -108,7 +106,7 @@ class Settings(BaseSettings):
     )
 
     # Discovery Configuration
-    force_doc_urls: Optional[str] = Field(
+    force_doc_urls: str | None = Field(
         default=None,
         description="Comma-separated list of documentation URLs to use (bypasses discovery)",
         validation_alias="FORCE_DOC_URLS",
@@ -135,7 +133,7 @@ class Settings(BaseSettings):
 
 
 # Global settings instance
-_settings: Optional[Settings] = None
+_settings: Settings | None = None
 
 
 def get_settings() -> Settings:
